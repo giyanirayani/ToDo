@@ -8,7 +8,7 @@ import com.example.todo_list.todo.TodoList
 
 @Database(entities = [TodoList::class], exportSchema = false, version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun todoDao(): Dao
+    abstract fun todoDao(): TodoDao
 
     companion object{
         private const val DB_NAME = "TODO_DB"
