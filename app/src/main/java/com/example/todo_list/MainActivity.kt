@@ -1,9 +1,9 @@
-package com.example.todo_list
+package com.example.todo_list.util
 
 import android.app.AlertDialog
-import android.os.Bundle
 import android.app.SearchManager
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -14,8 +14,10 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.todo_list.todo.TodoList
 import com.example.todo_list.todo.TodoListAdapter
+import com.example.todo_list.util.AlarmReceiver
+import com.example.todo_list.todo.TodoList
+import com.example.todo_list.R
 import com.example.todo_list.todo.TodoListViewModel
 import com.example.todo_list.util.Common
 import com.example.todo_list.util.Dialog
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var todoViewModel: TodoListViewModel
     private lateinit var todoAdapter: TodoListAdapter
+    private lateinit var alarmReceiver: AlarmReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         fab.setOnClickListener {
             showInsertDialog()
         }
+        alarmReceiver = AlarmReceiver()
     }
 
     override fun onResume() {
@@ -148,6 +152,7 @@ class MainActivity : AppCompatActivity() {
                 todoViewModel.insertTodo(todo)
 
                 if (remindMe) {
+                    alarmReceiver.setReminderAlarm(this, dueDate, time, "$title is due in 1 hour")
                 }
                 Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
             }
@@ -225,6 +230,7 @@ class MainActivity : AppCompatActivity() {
                 todoViewModel.updateTodo(todo)
 
                 if (remindMe && prevDueTime != time) {
+                    alarmReceiver.setReminderAlarm(this, dueDate, time, "$title is due in 1 hour")
                 }
 
                 Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show()
@@ -255,26 +261,26 @@ class MainActivity : AppCompatActivity() {
             }.create().show()
     }
 
-        override fun onCreateOptionsMenu(menu: Menu): Boolean {
-            menuInflater.inflate(R.menu.menu_main, menu)
-            val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            val searchView = (menu.findItem(R.id.menu_search_toolbar)).actionView as SearchView
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            searchView.queryHint = "Search tasks"
-            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    searchView.clearFocus()
-                    todoAdapter.filter.filter(query)
-                    return true
-                }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    todoAdapter.filter.filter(newText)
-                    return false
-                }
-            })
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {menuInflater.inflate(R.menu.menu_main, menu)
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchView = (menu.findItem(R.id.menu_search_toolbar)).actionView as SearchView
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+        searchView.queryHint = "Search tasks"
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchView.clearFocus()
+                todoAdapter.filter.filter(query)
+                return true
+            }
 
-            return super.onCreateOptionsMenu(menu)
+            override fun onQueryTextChange(newText: String?): Boolean {
+                todoAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
