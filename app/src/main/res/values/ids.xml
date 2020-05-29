@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tanggal_buat" type="id" />
+    <item name="tanggal_waktu" type="id" />
+    <item name="sort" type="id" />
+</resources>

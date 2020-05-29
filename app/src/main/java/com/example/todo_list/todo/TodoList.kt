@@ -4,30 +4,30 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "todoList")
+@Entity(tableName = "todo_table")
 data class TodoList(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     val id: Int? = null,
 
-    @ColumnInfo(name = "judul")
-    var judul: String,
+    @ColumnInfo(name = "title")
+    var title: String,
 
     @ColumnInfo(name = "note")
-    var note: String,
+    var note: String? = null,
 
-    @ColumnInfo(name = "tanggal_buat")
-    var tanggalBuat: String,
+    @ColumnInfo(name = "date_created")
+    var dateCreated: String,
 
-    @ColumnInfo(name = "tanggal_update")
-    var tanggalUpdate: String,
+    @ColumnInfo(name = "date_updated")
+    var dateUpdated: String,
 
-    @ColumnInfo(name = "tanggal_tenggat")
-    var tenggat: String,
+    @ColumnInfo(name = "due_date")
+    var dueDate: String,
 
-    @ColumnInfo(name = "waktu_tenggat")
-    var waktuTenggat: String,
+    @ColumnInfo(name = "due_time")
+    var dueTime: String,
 
-    @ColumnInfo(name = "notifikasi")
-    var notifikasi: Boolean = true
+    @ColumnInfo(name = "remind_me")
+    var remindMe: Boolean = true
 )
